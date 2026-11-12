@@ -1,0 +1,13 @@
+{
+  "name": "sgi-agent-homepage",
+  "version": "1.0.0",
+  "description": "SGI서울보증 행복대리점 공식 정적 웹사이트 (1566-1028 / 1028.co.kr)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+
