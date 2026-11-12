@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             if (!consent) {
-                showToast('⚠️ 개인(기업)정보 수집 및 이용에 동의해 주세요.');
+                showToast('⚠️ 개인정보취급방침에 동의해 주세요.');
                 document.getElementById('privacyConsent').focus();
                 return;
             }
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `• 보증종목: ${product}`,
                 `• 예상 보증(세액)금액: ${amount}`,
                 `• 문의상세내용:\n${details}`,
-                `• 개인(기업)정보 수집·이용 동의: 동의함`
+                `• 개인정보취급방침 동의: 동의함`
             ].join('\n');
 
             const mailSubject = encodeURIComponent(`[SGI서울보증 행복대리점 상담신청] ${name} (${product})`);
