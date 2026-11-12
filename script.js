@@ -392,14 +392,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 6. 네이버 지도 스타일 인터랙티브 맵 초기화 (경기 구리시 경춘로 158 한화생명빌딩 2층)
+    // 6. 네이버 지도 스타일 인터랙티브 맵 초기화 (경기 구리시 경춘로 158 한화생명 구리사옥 2층)
     const mapContainer = document.getElementById('naverStyleMap');
     if (mapContainer && typeof L !== 'undefined') {
-        const agencyCoords = [37.6013843, 127.1366102];
+        // 한화생명 구리사옥 (경기도 구리시 경춘로 158 / 교문동 205-3, 한양대학교 구리병원 맞은편) 정확 좌표
+        const agencyCoords = [37.600458, 127.132695];
+        const viewCenterCoords = [37.60082, 127.132695];
         const naverMapUrl = 'https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%20%EA%B5%AC%EB%A6%AC%EC%8B%9C%20%EA%B2%BD%EC%B6%98%EB%A1%9C%20158%20%ED%95%9C%ED%99%94%EC%83%9D%EB%AA%85%EB%B9%8C%EB%94%A9';
 
         const map = L.map(mapContainer, {
-            center: agencyCoords,
+            center: viewCenterCoords,
             zoom: 17,
             zoomControl: false,
             attributionControl: false
@@ -414,21 +416,30 @@ document.addEventListener('DOMContentLoaded', () => {
             maxZoom: 19
         });
 
-        // 네이버 지도 스타일 초록색 핀 + 상단 장소 말풍선 마커
+        // 한화생명 구리사옥 건물 위치 강조 원형 표시
+        L.circleMarker(agencyCoords, {
+            radius: 16,
+            color: '#03C75A',
+            weight: 2,
+            fillColor: '#03C75A',
+            fillOpacity: 0.18
+        }).addTo(map);
+
+        // 네이버 지도 스타일 초록색 핀 + 상단 장소 말풍선 마커 (핀 끝점이 정확히 한화생명 구리사옥 위에 위치)
         const naverPinHtml = `
             <div class="naver-custom-pin-wrap">
                 <div class="naver-info-bubble">
                     <div class="naver-bubble-title">
                         <span class="naver-bubble-badge">N</span>
-                        <span>SGI서울보증 행복대리점</span>
+                        <span>SGI서울보증 행복대리점 (한화생명 2층)</span>
                     </div>
-                    <div class="naver-bubble-addr">경기 구리시 경춘로 158 한화생명빌딩 2층</div>
+                    <div class="naver-bubble-addr">경기 구리시 경춘로 158 한화생명 구리사옥 2층</div>
                     <div class="naver-bubble-actions">
                         <a href="${naverMapUrl}" target="_blank" rel="noopener noreferrer" class="naver-bubble-link primary">네이버 길찾기 ↗</a>
                         <a href="tel:1566-1028" class="naver-bubble-link">📞 1566-1028</a>
                     </div>
                 </div>
-                <svg width="38" height="48" viewBox="0 0 38 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 4px 8px rgba(0,0,0,0.28));">
+                <svg width="36" height="46" viewBox="0 0 38 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 4px 8px rgba(0,0,0,0.28)); display: block;">
                     <path d="M19 0C8.507 0 0 8.507 0 19C0 32.25 19 48 19 48C19 48 38 32.25 38 19C38 8.507 29.493 0 19 0Z" fill="#03C75A"/>
                     <circle cx="19" cy="18.5" r="8.5" fill="#FFFFFF"/>
                     <path d="M15.8 14.5H18.1L20.3 18.2V14.5H22.2V22.5H19.9L17.7 18.8V22.5H15.8V14.5Z" fill="#03C75A"/>
@@ -439,8 +450,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const naverIcon = L.divIcon({
             html: naverPinHtml,
             className: 'naver-custom-div-icon',
-            iconSize: [250, 145],
-            iconAnchor: [125, 142]
+            iconSize: [276, 160],
+            iconAnchor: [138, 160]
         });
 
         L.marker(agencyCoords, { icon: naverIcon }).addTo(map);
@@ -454,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (btnZoomIn) btnZoomIn.addEventListener('click', () => map.zoomIn());
         if (btnZoomOut) btnZoomOut.addEventListener('click', () => map.zoomOut());
-        if (btnReset) btnReset.addEventListener('click', () => map.setView(agencyCoords, 17, { animate: true }));
+        if (btnReset) btnReset.addEventListener('click', () => map.setView(viewCenterCoords, 17, { animate: true }));
 
         if (btnNormal && btnSatellite) {
             btnNormal.addEventListener('click', () => {
