@@ -40,7 +40,7 @@ function openProductWindow(url, productName) {
 }
 
 /**
- * 1-2. 사업자등록증 전용 팝업 창 열기 (주소창·툴바 제외)
+ * 1-2. 보험대리점등록증 전용 팝업 창 열기 (주소창·툴바 제외)
  */
 function openBusinessLicensePopup() {
     const width = 760;
@@ -62,15 +62,15 @@ function openBusinessLicensePopup() {
         'resizable=yes'
     ].join(',');
 
-    const popup = window.open('', 'SGI_Business_License', windowFeatures);
+    const popup = window.open('', 'SGI_Agency_Certificate', windowFeatures);
     if (popup) {
-        const imgUrl = new URL('assets/business-license.jpg', window.location.href).href;
+        const imgUrl = new URL('assets/agency-certificate.jpg', window.location.href).href;
         popup.document.open();
         popup.document.write(`<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>SGI서울보증 행복대리점 - 사업자등록증 (132-91-45205)</title>
+    <title>SGI서울보증 행복대리점 - 보험대리점등록증 (제 2006111273호)</title>
     <style>
         body {
             margin: 0;
@@ -122,18 +122,18 @@ function openBusinessLicensePopup() {
 </head>
 <body>
     <div class="header-bar">
-        <h1>📄 SGI서울보증 행복대리점 사업자등록증</h1>
+        <h1>📄 SGI서울보증 행복대리점 보험대리점등록증</h1>
         <button class="btn-close" onclick="window.close()">창 닫기 ✕</button>
     </div>
     <div class="license-frame">
-        <img src="${imgUrl}" alt="행복대리점 사업자등록증 (132-91-45205)">
+        <img src="${imgUrl}" alt="행복대리점 보험대리점등록증 (제 2006111273호)">
     </div>
 </body>
 </html>`);
         popup.document.close();
         popup.focus();
     } else {
-        window.open('assets/business-license.jpg', '_blank', 'noopener,noreferrer');
+        window.open('assets/agency-certificate.jpg', '_blank', 'noopener,noreferrer');
     }
 }
 
