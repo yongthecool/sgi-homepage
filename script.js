@@ -328,10 +328,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 '접수일시': submittedAt
             };
 
-            // file:// 로 열었더라도 로컬 서버(localhost:3000) 또는 배포 서버(/api/consult)를 통해 발송
-            const apiEndpoints = window.location.protocol === 'file:'
+            // GitHub Pages / 정식 도메인에서는 FormSubmit으로 직접 즉시 전송, 로컬(file://, localhost)에서는 로컬 중계 서버 우선 사용
+            const isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const apiEndpoints = isLocal
                 ? ['http://localhost:3000/api/consult', `https://formsubmit.co/ajax/${RECIPIENT_EMAIL}`]
-                : ['/api/consult', `https://formsubmit.co/ajax/${RECIPIENT_EMAIL}`];
+                : [`https://formsubmit.co/ajax/${RECIPIENT_EMAIL}`, '/api/consult'];
 
             let sentSuccess = false;
             let needsActivation = false;
