@@ -931,6 +931,16 @@ textarea.form-control {
     word-break: keep-all;
 }
 
+.product-desc-item {
+    display: block;
+    padding-left: 0.85em;
+    text-indent: -0.85em;
+}
+
+.product-desc-item + .product-desc-item {
+    margin-top: 6px;
+}
+
 .product-link-footer {
     display: flex;
     align-items: center;
@@ -1808,7 +1818,7 @@ textarea.form-control {
 }
 
 @media (max-width: 768px) {
-    .top-bar-slogan {
+    .top-bar {
         display: none;
     }
     .mobile-menu-btn {

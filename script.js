@@ -6,11 +6,18 @@ const RECIPIENT_EMAIL = '8470005@naver.com';
 const AGENCY_ADDRESS = '경기 구리시 경춘로 158 한화생명빌딩 2층';
 
 /**
- * 1. 상품안내 링크 이동 (주소창·툴바 제외 팝업 창으로 열기)
- * @param {string} url 이동할 SGI서울보증 상품 상세 URL
- * @param {string} productName 상품명
+ * 1. 상품안내 링크 이동
+ * - SHOW_PRODUCT_ADDRESS_BAR = true  : 주소창이 보이는 일반 새 탭/창으로 열기 (현재 설정)
+ * - SHOW_PRODUCT_ADDRESS_BAR = false : 주소창·툴바 제외 전용 팝업 창으로 열기 (추후 복원용)
  */
+const SHOW_PRODUCT_ADDRESS_BAR = true;
+
 function openProductWindow(url, productName) {
+    if (SHOW_PRODUCT_ADDRESS_BAR) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+        return;
+    }
+
     const width = 1220;
     const height = 860;
     const left = Math.max(0, Math.floor((window.screen.width - width) / 2));
