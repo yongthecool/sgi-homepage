@@ -941,6 +941,35 @@ textarea.form-control {
     margin-top: 6px;
 }
 
+/* 카카오톡 상담신청 버튼 (납세보증보험 카드 아래 전용) */
+.product-card-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.product-card-group .product-card {
+    flex: 1;
+}
+
+.kakao-consult-link {
+    display: block;
+    border-radius: 999px;
+    transition: var(--transition);
+}
+
+.kakao-consult-link img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.kakao-consult-link:hover,
+.kakao-consult-link:focus-visible {
+    transform: translateY(-2px);
+    filter: brightness(0.97);
+}
+
 .product-link-footer {
     display: flex;
     align-items: center;
