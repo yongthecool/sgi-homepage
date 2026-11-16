@@ -953,21 +953,33 @@ textarea.form-control {
 }
 
 .kakao-consult-link {
-    display: block;
-    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 52px;
+    padding: 0 18px;
+    border-radius: 12px;
+    background-color: #FEE500;          /* 카카오 공식 옐로우 */
+    color: rgba(0, 0, 0, 0.85);         /* 카카오 가이드 레이블 컬러 */
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
     transition: var(--transition);
 }
 
-.kakao-consult-link img {
-    display: block;
-    width: 100%;
-    height: auto;
+.kakao-symbol {
+    flex-shrink: 0;
 }
 
 .kakao-consult-link:hover,
 .kakao-consult-link:focus-visible {
     transform: translateY(-2px);
-    filter: brightness(0.97);
+    background-color: #F5DC00;
+    box-shadow: var(--shadow-md);
+    outline: none;
 }
 
 .product-link-footer {
