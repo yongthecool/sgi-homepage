@@ -20,6 +20,134 @@
 </head>
 
 <body>
+    <!-- ==========================================================================
+         [서울보증 본사 심사 안내 레이어 팝업]
+         * 설명: 본사 심사/검수 기간 동안 전체 화면 조작 및 스크롤을 원천 차단하고 점검 안내를 띄웁니다.
+         * 심사 완료 후 복구 방법:
+           아래 <!-- [심사 레이어 시작] --> 부터 <!-- [심사 레이어 끝] --> 까지를
+           삭제하시거나 주석(<!-- ... -->) 처리하시면 원래 사이트로 정상 복원됩니다.
+         ========================================================================== -->
+    <!-- [심사 레이어 시작] -->
+    <style id="inspectionPopupStyles">
+        html.inspection-mode,
+        body.inspection-mode {
+            overflow: hidden !important;
+            height: 100% !important;
+            touch-action: none !important;
+        }
+        .inspection-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.78);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 99999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .inspection-modal-card {
+            background: #ffffff;
+            max-width: 440px;
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2);
+            animation: inspectionFadeIn 0.3s ease-out;
+            margin: auto;
+        }
+        .inspection-modal-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .inspection-call-bar {
+            padding: 16px 20px;
+            background: #ffffff;
+            text-align: center;
+        }
+        .inspection-call-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 18px;
+            background: #003894;
+            color: #ffffff !important;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 56, 148, 0.25);
+            transition: background 0.2s, transform 0.15s;
+            box-sizing: border-box;
+        }
+        .inspection-call-btn:hover {
+            background: #002970;
+            transform: translateY(-1px);
+        }
+        @keyframes inspectionFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+    <div id="inspectionModalOverlay" class="inspection-overlay" role="dialog" aria-modal="true" aria-labelledby="inspectionTitle">
+        <div class="inspection-modal-card">
+            <h2 id="inspectionTitle" class="visually-hidden" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;">홈페이지 서비스 점검 안내</h2>
+            <img src="img/inspection_notice.jpg" alt="홈페이지 서비스 점검 안내 - 홈페이지 검수작업중으로 불편을 드려 죄송합니다. 전화상담업무는 정상적으로 운영되고 있습니다. 가입상담문의: 1566-1028" class="inspection-modal-img">
+            <div class="inspection-call-bar">
+                <a href="tel:1566-1028" class="inspection-call-btn" title="대표전화 바로걸기">
+                    📞 전화상담 바로연결 (1566-1028)
+                </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function() {
+            var overlay = document.getElementById('inspectionModalOverlay');
+            if (!overlay) return;
+            document.documentElement.classList.add('inspection-mode');
+            document.body.classList.add('inspection-mode');
+            
+            // 키보드 탭 탐색으로 뒷배경 포커스 방지
+            window.addEventListener('keydown', function(e) {
+                if (e.key === 'Tab') {
+                    var callBtn = overlay.querySelector('.inspection-call-btn');
+                    if (callBtn) {
+                        callBtn.focus();
+                        e.preventDefault();
+                    }
+                }
+            });
+            // 모바일 및 PC 뒷배경 스크롤 방지
+            window.addEventListener('wheel', function(e) {
+                if (!overlay.contains(e.target) || overlay.scrollHeight <= overlay.clientHeight) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            window.addEventListener('touchmove', function(e) {
+                if (!overlay.contains(e.target) || overlay.scrollHeight <= overlay.clientHeight) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        })();
+    </script>
+    <!-- [심사 레이어 끝] -->
     <!-- 1. Top Info Bar -->
     <div class="top-bar">
         <div class="container top-bar-inner">
