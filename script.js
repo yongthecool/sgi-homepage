@@ -3,6 +3,7 @@
  */
 
 const RECIPIENT_EMAIL = '809b000@sgica.co.kr';
+const CONSULT_API_URL = 'https://sgi-smtp-api-production.up.railway.app/api/consult';
 const AGENCY_ADDRESS = '경기 구리시 경춘로 158 한화생명빌딩 2층';
 
 /**
@@ -326,13 +327,57 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
             }
 
-            // 외부 서버 전송·저장 없는 순수 정적 방식: 작성된 신청서 요약 및 mailto 직접 발송 모달 표시
-            if (modalStatusDesc) {
-                modalStatusDesc.textContent = `개인정보 보호를 위해 입력하신 내용은 외부 서버에 전송·저장되지 않습니다. 아래 [이메일로 바로 보내기] 버튼을 눌러 ${RECIPIENT_EMAIL}로 직접 발송하시거나, 신청내용을 복사해 메일·전화(1566-1028)로 문의해 주세요.`;
+            // 자체 네이버 SMTP 백엔드(DB 무저장)로 직접 전송
+            const originalBtnHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>전송 중입니다... 잠시만 기다려 주세요</span>';
+
+            const payload = {
+                name,
+                phone,
+                product,
+                amount,
+                details,
+                submittedAt
+            };
+
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const endpoint = isLocal ? '/api/consult' : CONSULT_API_URL;
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    if (modalStatusDesc) {
+                        modalStatusDesc.textContent = '상담신청 정보가 담당 전문가(809b000@sgica.co.kr)에게 안전하게 전송되었습니다. 확인 후 신속히 연락드리겠습니다.';
+                    }
+                    if (directMailtoBtn) directMailtoBtn.style.display = 'none';
+                } else {
+                    if (modalStatusDesc) {
+                        modalStatusDesc.textContent = `자동 전송에 일시적인 오류가 발생했습니다. 아래 [이메일로 바로 보내기] 버튼을 눌러 ${RECIPIENT_EMAIL}로 발송하시거나 대표전화(1566-1028)로 문의해 주세요.`;
+                    }
+                    if (directMailtoBtn) directMailtoBtn.style.display = 'inline-flex';
+                }
+            } catch (error) {
+                if (modalStatusDesc) {
+                    modalStatusDesc.textContent = `네트워크 연결이 원활하지 않습니다. 아래 [이메일로 바로 보내기] 버튼을 눌러 ${RECIPIENT_EMAIL}로 발송하시거나 대표전화(1566-1028)로 문의해 주세요.`;
+                }
+                if (directMailtoBtn) directMailtoBtn.style.display = 'inline-flex';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
+                if (modalSummary) modalSummary.textContent = summaryText;
+                if (modalBackdrop) modalBackdrop.classList.add('active');
+                consultForm.reset();
             }
-            if (modalSummary) modalSummary.textContent = summaryText;
-            if (modalBackdrop) modalBackdrop.classList.add('active');
-            consultForm.reset();
         });
     }
 
