@@ -3,7 +3,7 @@
  */
 
 const RECIPIENT_EMAIL = '809b000@sgica.co.kr';
-const CONSULT_API_URL = 'https://sgi-smtp-api-production.up.railway.app/api/consult';
+const CONSULT_API_URL = 'https://script.google.com/macros/s/AKfycbyL4WhFalFPrW5IjrmAVXMLgVHdtZhJ-Eqs1GWW3hcapzC-2JnsdZiW-lVu721ACikC/exec';
 const AGENCY_ADDRESS = '경기 구리시 경춘로 158 한화생명빌딩 2층';
 
 /**
@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
             }
 
-            // 자체 네이버 SMTP 백엔드(DB 무저장)로 직접 전송
+            // Google Apps Script 웹 앱(DB 무저장)으로 직접 전송 (text/plain으로 CORS 프리플라이트 방지)
             const originalBtnHtml = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span>전송 중입니다... 잠시만 기다려 주세요</span>';
@@ -341,15 +341,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 submittedAt
             };
 
-            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const endpoint = isLocal ? '/api/consult' : CONSULT_API_URL;
-
             try {
-                const response = await fetch(endpoint, {
+                const response = await fetch(CONSULT_API_URL, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Content-Type': 'text/plain;charset=utf-8'
                     },
                     body: JSON.stringify(payload)
                 });
