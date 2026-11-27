@@ -2,7 +2,7 @@
  * SGI서울보증 행복대리점 정적 웹사이트 스크립트
  */
 
-const RECIPIENT_EMAIL = '8470005@naver.com';
+const RECIPIENT_EMAIL = '809b000@sgica.co.kr';
 const AGENCY_ADDRESS = '경기 구리시 경춘로 158 한화생명빌딩 2층';
 
 /**
@@ -203,7 +203,7 @@ function formatAmountWithCommas(value) {
 }
 
 /**
- * 5. 온라인 상담신청 폼 전송 처리 (8470005@naver.com)
+ * 5. 온라인 상담신청 폼 전송 처리 (809b000@sgica.co.kr)
  */
 document.addEventListener('DOMContentLoaded', () => {
     // 모바일 메뉴 토글
@@ -312,79 +312,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (copySummaryBtn) {
                 copySummaryBtn.onclick = async () => {
-                    await navigator.clipboard.writeText(summaryText);
+                    try {
+                        await navigator.clipboard.writeText(summaryText);
+                    } catch (err) {
+                        const tempInput = document.createElement('textarea');
+                        tempInput.value = summaryText;
+                        document.body.appendChild(tempInput);
+                        tempInput.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempInput);
+                    }
                     showToast('📋 상담신청 내용이 복사되었습니다.');
                 };
             }
 
-            // 버튼 로딩 상태
-            const originalBtnHtml = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span>전송 중입니다... 잠시만 기다려 주세요</span>';
-
-            const payload = {
-                _subject: `[SGI서울보증 행복대리점 상담신청] ${name} - ${product}`,
-                _template: 'table',
-                _captcha: 'false',
-                '성함_기업명': name,
-                '연락처': phone,
-                '보증종목': product,
-                '예상보증금액': amount,
-                '문의상세내용': details,
-                '개인정보수집동의': '동의함',
-                '접수일시': submittedAt
-            };
-
-            // GitHub Pages / 정식 도메인에서는 FormSubmit으로 직접 즉시 전송, 로컬(file://, localhost)에서는 로컬 중계 서버 우선 사용
-            const isLocal = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const apiEndpoints = isLocal
-                ? ['http://localhost:3000/api/consult', `https://formsubmit.co/ajax/${RECIPIENT_EMAIL}`]
-                : [`https://formsubmit.co/ajax/${RECIPIENT_EMAIL}`, '/api/consult'];
-
-            let sentSuccess = false;
-            let needsActivation = false;
-
-            try {
-                for (const endpoint of apiEndpoints) {
-                    try {
-                        const response = await fetch(endpoint, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify(payload)
-                        });
-                        const result = await response.json();
-                        if (response.ok && (result.success === 'true' || result.success === true)) {
-                            sentSuccess = true;
-                            break;
-                        }
-                        if (result && typeof result.message === 'string' && result.message.toLowerCase().includes('activation')) {
-                            needsActivation = true;
-                            break;
-                        }
-                    } catch (innerErr) {
-                        // 다음 엔드포인트로 폴백 시도
-                    }
-                }
-
-                if (sentSuccess) {
-                    modalStatusDesc.textContent = '상담신청 정보가 담당 전문가에게 성공적으로 전송되었습니다. 확인 후 신속히 연락드리겠습니다.';
-                } else if (needsActivation) {
-                    modalStatusDesc.textContent = '최초 1회 이메일 수신 승인 대기 중입니다. 수신 메일함(또는 스팸함)으로 발송된 FormSubmit의 [Activate Form] 버튼만 1회 눌러주시면 이후 모든 상담신청이 즉시 메일로 도착합니다.';
-                } else {
-                    modalStatusDesc.textContent = '상담신청 내역이 접수되었습니다. 급하신 용무는 대표전화(1566-1028)로 연락 주시면 즉시 상담을 도와드립니다.';
-                }
-            } catch (error) {
-                modalStatusDesc.textContent = '상담신청 내역이 준비되었습니다. 신청 내용을 복사하시거나 대표전화(1566-1028)로 문의해 주시면 신속히 상담을 도와드립니다.';
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnHtml;
-                if (modalSummary) modalSummary.textContent = summaryText;
-                if (modalBackdrop) modalBackdrop.classList.add('active');
-                consultForm.reset();
+            // 외부 서버 전송·저장 없는 순수 정적 방식: 작성된 신청서 요약 및 mailto 직접 발송 모달 표시
+            if (modalStatusDesc) {
+                modalStatusDesc.textContent = `개인정보 보호를 위해 입력하신 내용은 외부 서버에 전송·저장되지 않습니다. 아래 [이메일로 바로 보내기] 버튼을 눌러 ${RECIPIENT_EMAIL}로 직접 발송하시거나, 신청내용을 복사해 메일·전화(1566-1028)로 문의해 주세요.`;
             }
+            if (modalSummary) modalSummary.textContent = summaryText;
+            if (modalBackdrop) modalBackdrop.classList.add('active');
+            consultForm.reset();
         });
     }
 
